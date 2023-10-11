@@ -1,3 +1,5 @@
+import Card from "./Card";
+
 export default () => (
   <main>
     <h1>Welcome to the (unofficial) 2023 USMI cohort page!</h1>
@@ -21,5 +23,7 @@ export default () => (
       changes. And feel free of course to talk to Nathan to have any changes or
       features put in.
     </p>
+    <Card />
+
   </main>
 );
