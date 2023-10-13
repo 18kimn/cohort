@@ -1,10 +1,11 @@
 import {useEffect, useState, useRef} from 'react'
 
-// Cooord = {x: nunber, y: number}
+// Coord = {x: number, y: number}
 
 export default () => {
     const div = useRef(null)
-    const [coord, setCoord] = useState({x: 0, y: 0})
+    const [coord, setCoord] = useState({x: 0, y: 0}) //pos 3 and 4
+    const newCoord = {x: 0, y: 0} //pos 1 and 2
     
       function dragMouseDown(e) {
         e = e || window.event;
@@ -19,11 +20,16 @@ export default () => {
       function elementDrag(e) {
         e = e || window.event;
         e.preventDefault();
-        const newCoord = {x: coord.x - e.clientX, y: coord.y- e.clientY}
+        newCoord.x = coord.x - e.clientX;
+        newCoord.y = coord.y - e.clientY;
+
         // set the element's new position:
-        div.current.style.top = (div.current.offsetTop - newCoord.y) + "px";
-        div.current.style.left = (div.current.offsetLeft - newCoord.x) + "px";
         setCoord({x: e.clientX, y: e.clientY})
+
+        div.current.style.top = (div.current.offsetTop - newCoord.y) + "px";
+        console.log("X: " + div.current.offsetTop + "   Y: " + div.current.offsetLeft);
+        //console.log(div.current.parentElement);
+        div.current.style.left = (div.current.offsetLeft - newCoord.x) + "px";
       }
     
       function closeDragElement() {
@@ -36,5 +42,5 @@ export default () => {
 
     return <div ref={div} className="card" onMouseDown={dragMouseDown}>
     DRAG ME
-  </div>
+    </div>
 }

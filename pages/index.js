@@ -1,4 +1,5 @@
 import Card from "./Card";
+import Drag from "./Drag";
 
 export default () => (
   <main>
@@ -23,7 +24,9 @@ export default () => (
       changes. And feel free of course to talk to Nathan to have any changes or
       features put in.
     </p>
-    <Card />
+    <Drag text="Imagine if this was a card with information about our cool projects."/>
+    <Drag text="Nathan, of GEO experience"/>
+
 
   </main>
 );
