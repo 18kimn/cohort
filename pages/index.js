@@ -24,8 +24,8 @@ export default () => (
       changes. And feel free of course to talk to Nathan to have any changes or
       features put in.
     </p>
-    <Drag text="Imagine if this was a card with information about our cool projects."/>
-    <Drag text="Nathan, of GEO experience"/>
+    <Drag text="Imagine if this was a card with information about our cool projects." x={100} y={50} />
+    <Drag text="Nathan, of GEO experience" x={0} y={0}/>
 
 
   </main>
