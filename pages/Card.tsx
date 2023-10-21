@@ -21,14 +21,12 @@ export default (props: Card) => {
 
   useEffect(() => {
     if (!editorRef.current) return;
-    console.log("useeffect firing");
     const toolbar = editorRef.current?.querySelector(
       ".ql-toolbar"
     ) as HTMLElement;
     if (!toolbar) return;
     toolbar.style.display = isFocused ? "block" : "none";
-  }, [isFocused, toolbar]);
-  console.log(isFocused);
+  }, [isFocused]);
 
   useEffect(() => {
     clearTimeout(fetchExecutor.current);

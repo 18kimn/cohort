@@ -12,7 +12,6 @@ export default () => {
       .then(setCards)
       .catch(console.error);
   }, []);
-  console.log(cards);
 
   return (
     <main>
