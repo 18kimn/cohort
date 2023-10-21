@@ -9,12 +9,19 @@
     "build:static": "next build && next out"
   },
   "dependencies": {
+    "@types/better-sqlite3": "^7.6.6",
+    "better-sqlite3": "^9.0.0",
     "next": "^13.5.5-canary.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-draggable": "^4.4.6"
+    "react-draggable": "^4.4.6",
+    "react-quill": "^2.0.0"
   },
   "devDependencies": {
-    "eslint-config-prettier": "^9.0.0"
+    "@types/node": "20.8.7",
+    "@types/react": "18.2.30",
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
+    "typescript": "5.2.2"
   }
 }
