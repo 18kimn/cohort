@@ -17,7 +17,7 @@ export default () => {
     <main>
       <CardCreator setCards={setCards} />
       {cards.map((card) => (
-        <Card key={card.id} {...card} />
+        <Card key={card.id} {...card} setCards={setCards} />
       ))}
     </main>
   );

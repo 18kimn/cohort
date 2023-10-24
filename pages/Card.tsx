@@ -1,5 +1,5 @@
 import { Card } from "types/data";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import Draggable from "react-draggable"; // Both at the same time
 import { DraggableData } from "react-draggable";
 import "react-quill/dist/quill.snow.css";
@@ -7,13 +7,30 @@ import dynamic from "next/dynamic";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-export default (props: Card) => {
+interface CardProps extends Card {
+  setCards: Dispatch<SetStateAction<Card[]>>;
+}
+
+export default (props: CardProps) => {
   const fetchExecutor = useRef(undefined as NodeJS.Timeout);
   const [data, setData] = useState({} as DraggableData);
   const [content, setContent] = useState(props.content);
 
   const editorRef = useRef(undefined as HTMLDivElement);
   const [isFocused, setIsFocused] = useState(false);
+
+  async function deleteCard() {
+    await fetch("/api/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(props),
+    });
+    props.setCards((cards: Card[]) =>
+      cards.filter((card) => card.id !== props.id)
+    );
+  }
 
   useEffect(() => {
     document.addEventListener("click", () => setIsFocused(false));
@@ -61,6 +78,7 @@ export default (props: Card) => {
       <div className="card" tabIndex={1} onFocus={() => setIsFocused(true)}>
         <div onClick={(e) => e.stopPropagation()} ref={editorRef}>
           <ReactQuill theme="snow" value={content} onChange={setContent} />
+          <button onClick={deleteCard}>Delete</button>
         </div>
       </div>
     </Draggable>

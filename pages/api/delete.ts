@@ -1,21 +1,24 @@
+import type { Card } from "@/types/data";
 import db from "lib/db";
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { RunResult } from "better-sqlite3";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<RunResult>
+  res: NextApiResponse<Card[]>
 ) {
+  if (!req.body?.id) {
+    res.status(400);
+    return;
+  }
   if (req.method === "POST") {
     const result = db
       .prepare(
-        `INSERT INTO cards(creationTime, content, x, y)
-      VALUES($creationTime, $content, $x, $y)
+        `DELETE FROM cards
+        WHERE id = $id
       `
       )
-      .run(req.body);
-
-    res.status(200).json(result);
+      .run({ id: req.body.id });
+    res.status(200).json([]);
     return;
   }
   res.status(400);
