@@ -78,7 +78,9 @@ export default (props: CardProps) => {
       <div className="card" tabIndex={1} onFocus={() => setIsFocused(true)}>
         <div onClick={(e) => e.stopPropagation()} ref={editorRef}>
           <ReactQuill theme="snow" value={content} onChange={setContent} />
-          <button onClick={deleteCard}>Delete</button>
+          {
+            isFocused && <button onClick={deleteCard}>Delete</button>
+          }
         </div>
       </div>
     </Draggable>
