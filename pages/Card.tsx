@@ -76,10 +76,10 @@ export default (props: CardProps) => {
       disabled={isFocused}
     >
       <div className="card" tabIndex={1} onFocus={() => setIsFocused(true)}>
-        <div onClick={(e) => e.stopPropagation()} ref={editorRef}>
+        <div className="container" onClick={(e) => e.stopPropagation()} ref={editorRef}>
           <ReactQuill theme="snow" value={content} onChange={setContent} />
           {
-            isFocused && <button onClick={deleteCard}>Delete</button>
+            isFocused && <button className="deleteButton" onClick={deleteCard}>DELETE</button>
           }
         </div>
       </div>
