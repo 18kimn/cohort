@@ -32,7 +32,7 @@ export default ({ setCards }) => {
 
   return (
     <>
-      <button onClick={() => dialogRef.current.showModal()}>
+      <button id="insert" onClick={() => dialogRef.current.showModal()}>
         insert new card
       </button>
       <dialog

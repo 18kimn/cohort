@@ -8,15 +8,37 @@ main {
 .card {
   position: absolute;
   z-index: 9;
-  border: 1px solid #d3d3d3;
-  border-radius: 10px;
   text-align: center;
   cursor: move;
   width: 400px;
 }
 
+.container {
+  border-radius: 10px;
+}
+
 .card .ql-toolbar {
   display: none;
+}
+
+.ql-container.ql-snow {
+  border: 1px solid #d3d3d3 !important;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.ql-toolbar.ql-snow {
+  background-color: rgb(200, 200, 200);
+  border: 3px solid #d3d3d3;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.deleteButton {
+  background-color: rgb(242, 110, 110);
+  color: white;
+  border: 1px solid rgb(242, 110, 110);
+  border-radius: 4px;
 }
 
 dialog {
@@ -25,4 +47,13 @@ dialog {
 
 dialog .dialog-container {
   padding: 1rem;
+}
+
+#insert {
+  font-size: 9pt;
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: black;
+  color: white;
+  padding: 5px;
 }
