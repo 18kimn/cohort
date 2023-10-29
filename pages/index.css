@@ -23,21 +23,22 @@ main {
 
 .ql-container.ql-snow {
   border: 1px solid #d3d3d3 !important;
-  border-radius: 10px 10px 10px 10px;
-  margin-bottom: 10px;
+  border-radius: 10px;
+  margin-bottom: 5px;
 }
 
 .ql-toolbar.ql-snow {
   background-color: rgb(200, 200, 200);
   border: 3px solid #d3d3d3;
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 10px;
+  margin-bottom: 5px;
 }
 
 .deleteButton {
   background-color: rgb(242, 110, 110);
   color: white;
   border: 1px solid rgb(242, 110, 110);
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 dialog {
