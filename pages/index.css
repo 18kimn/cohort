@@ -48,3 +48,12 @@ dialog {
 dialog .dialog-container {
   padding: 1rem;
 }
+
+#insert {
+  font-size: 9pt;
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: black;
+  color: white;
+  padding: 5px;
+}
