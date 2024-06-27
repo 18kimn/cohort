@@ -19,7 +19,7 @@ db.exec(
 AFTER INSERT ON cards
 BEGIN
     SELECT CASE
-        WHEN (SELECT COUNT(*) FROM cards) > 10 THEN
+        WHEN (SELECT COUNT(*) FROM cards) > 100 THEN
             -- If the row count exceeds the limit, raise an exception
             RAISE(FAIL, 'Row limit exceeded')
     END;
