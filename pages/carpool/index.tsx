@@ -44,7 +44,7 @@ export default function CarpoolPage() {
   const [location, setLocation] = useState<string>("");
 
   function pick(attendees: Person[]) {
-    let availableDrivers = shuffle(attendees.filter((a) => a.driver));
+    const availableDrivers = shuffle(attendees.filter((a) => a.driver));
     if (!availableDrivers.length) {
       setNoDrivers(true);
       return;
@@ -58,30 +58,26 @@ export default function CarpoolPage() {
     // up to 3 drivers, but not more than the number
     // available to drive, and not less than what's needed to fit everyone
     // in the car
-    const nDrivers = Math.max(
-      Math.min(Math.ceil(Math.random() * 3), availableDrivers.length - 1),
-      Math.ceil(attendees.length / 5)
+    const nDrivers = Math.min(
+      Math.max(
+        Math.min(Math.ceil(Math.random() * 3), availableDrivers.length),
+        Math.ceil(attendees.length / 5)
+      ),
+      Math.ceil(attendees.length / 2)
     );
-    const pickedDrivers = [];
+    const pickedDrivers = availableDrivers.splice(0, nDrivers);
     const pickedPassengers = [];
-    const availablePassengers = [...attendees];
+    const availablePassengers = [...attendees].filter(
+      (p) => !pickedDrivers.map((d) => d.name).includes(p.name)
+    );
     const passengersPerCar = Math.ceil(
       (attendees.length - nDrivers) / nDrivers
     );
     Array(nDrivers)
       .fill(0)
       .forEach(() => {
-        const pickedDriver = availableDrivers.shift();
-        availablePassengers.splice(
-          availablePassengers.findIndex((p) => p.name === pickedDriver.name),
-          1
-        );
-        pickedDrivers.push(pickedDriver);
         const passengerSet = availablePassengers.splice(0, passengersPerCar);
         pickedPassengers.push(passengerSet);
-        availableDrivers = availableDrivers.filter(
-          (d) => !passengerSet.map((p) => p.name).includes(d.name)
-        );
       });
     setDrivers(pickedDrivers);
     setPassengers(pickedPassengers);
@@ -111,22 +107,42 @@ export default function CarpoolPage() {
         {people.map((p) => {
           return (
             <div>
-              <span>{p.name}</span>
-              <label htmlFor={`${p.name}checkbox`} />
-              <input
-                id={`${p.name}checkbox`}
-                type="checkbox"
-                checked={p.isChecked || false}
-                onChange={(e) => {
+              <button
+                style={{
+                  padding: "0.2rem",
+                  cursor: "pointer",
+                  width: "20ch",
+                  transition: "background-color 400ms",
+                  background: p.isChecked ? "#c6c6c6" : "",
+                  border: "solid 1px black",
+                }}
+                onClick={() => {
                   setPeople((prev) =>
                     prev.map((prevP) =>
                       prevP.name === p.name
-                        ? { ...p, isChecked: e.target.checked }
+                        ? { ...p, isChecked: !p.isChecked }
                         : prevP
                     )
                   );
                 }}
-              />
+              >
+                <span>{p.name}</span>
+                <label htmlFor={`${p.name}checkbox`} />
+                <input
+                  id={`${p.name}checkbox`}
+                  type="checkbox"
+                  checked={p.isChecked || false}
+                  onChange={(e) => {
+                    setPeople((prev) =>
+                      prev.map((prevP) =>
+                        prevP.name === p.name
+                          ? { ...p, isChecked: e.target.checked }
+                          : prevP
+                      )
+                    );
+                  }}
+                />
+              </button>
             </div>
           );
         })}
@@ -153,8 +169,8 @@ export default function CarpoolPage() {
               );
             })}
           </div>
-          <br />
           <div>Adventure destination: {location}</div>
+          <br />
           <button onClick={() => pick(people.filter((p) => p.isChecked))}>
             Pick again
           </button>
