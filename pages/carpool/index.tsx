@@ -1,98 +1,183 @@
-import {useState} from 'react'
+import { useState } from "react";
 function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5)
+  return [...arr].sort(() => Math.random() - 0.5);
 }
 
-type Person = 
-{name: string, driver: boolean, isChecked?: boolean}
+type Person = { name: string; driver: boolean; isChecked?: boolean };
 const data: Person[] = [
-  {name: "Charles", driver: true},
-  {name: "Kevin", driver: true},
-  {name: "Nathan", driver: true},
-  {name: "Gena", driver: true},
-  {name: "Francesca", driver: true},
-  {name: "Paige", driver: true},
-  {name: "Linda", driver: true},
-  {name: "Shreya", driver: false},
-  {name: "Lavinia", driver: false},
-]
+  { name: "Charles", driver: true },
+  { name: "Kevin", driver: true },
+  { name: "Nathan", driver: true },
+  { name: "Gena", driver: true },
+  { name: "Francesca", driver: true },
+  { name: "Paige", driver: true },
+  { name: "Linda", driver: true },
+  { name: "Shreya", driver: false },
+  { name: "Lavinia", driver: false },
+];
 
-export default function CarpoolPage(){
-  const [people, setPeople] = useState<Person[]>(data)
-  const [drivers, setDrivers] = useState<Person[]>([])
-  const [passengers, setPassengers] = useState<Person[][]>([])
-  function pick(attendees: Person[]){
-    let availableDrivers = attendees.filter(a => a.driver)
-    // stupidly hard-coding
-    if(attendees.length <= 5){
-      const driver = availableDrivers[Math.floor(availableDrivers.length * Math.random())]
-      setDrivers([driver])
-      const passengers = attendees.filter(a => a.name != driver.name)
-      setPassengers([passengers])
-    } else {
-      const firstDriver = availableDrivers[Math.floor(availableDrivers.length * Math.random())]
-      availableDrivers = attendees.filter(a => a.driver && a.name !== firstDriver.name)
-      const secondDriver = availableDrivers[Math.floor(availableDrivers.length * Math.random())]
-      setDrivers([firstDriver, secondDriver])
+const locations = [
+  { name: "macheko", priority: 10 },
+  { name: "cupsnchai", priority: 10 },
+  { name: "nq", priority: 5 },
+  { name: "jail on hogback road", priority: 1 },
+  { name: "kathleen's house", priority: 2 },
+  { name: "Galaxy's house", priority: 2 },
+  { name: "Rocco's house", priority: 10 },
+  { name: "Linda's house", priority: 10 },
+  { name: "Munger", priority: 2 },
+  { name: "Ashley's", priority: 5 },
+  { name: "Bill's", priority: 5 },
+  { name: "the arb", priority: 2 },
+];
+const totalLocationPoints = locations.reduce(
+  (prev, curr) => prev + curr.priority,
+  0
+);
 
-      const shuffledAttendees = shuffle(attendees.filter(a => 
-        a.name !== firstDriver.name && a.name !== secondDriver.name
-      ))
+export default function CarpoolPage() {
+  const [people, setPeople] = useState<Person[]>(data);
+  const [drivers, setDrivers] = useState<Person[]>([]);
+  const [passengers, setPassengers] = useState<Person[][]>([]);
+  const [noDrivers, setNoDrivers] = useState<boolean>(false);
+  const [isLimo, setIsLimo] = useState<boolean>(false);
+  const [location, setLocation] = useState<string>("");
 
-      const halfAttendees = Math.floor(shuffledAttendees.length / 2)
-      const firstPassengers = shuffledAttendees.slice(0, halfAttendees)
-      const secondPassengers = shuffledAttendees.slice(halfAttendees)
-      setPassengers([firstPassengers, secondPassengers])
+  function pick(attendees: Person[]) {
+    let availableDrivers = shuffle(attendees.filter((a) => a.driver));
+    if (!availableDrivers.length) {
+      setNoDrivers(true);
+      return;
     }
+    if (attendees.length > 7) {
+      setIsLimo(true);
+      return;
+    }
+    setNoDrivers(false);
+    setIsLimo(false);
+    // up to 3 drivers, but not more than the number
+    // available to drive, and not less than what's needed to fit everyone
+    // in the car
+    const nDrivers = Math.max(
+      Math.min(Math.ceil(Math.random() * 3), availableDrivers.length - 1),
+      Math.ceil(attendees.length / 5)
+    );
+    const pickedDrivers = [];
+    const pickedPassengers = [];
+    const availablePassengers = [...attendees];
+    const passengersPerCar = Math.ceil(
+      (attendees.length - nDrivers) / nDrivers
+    );
+    Array(nDrivers)
+      .fill(0)
+      .forEach(() => {
+        const pickedDriver = availableDrivers.shift();
+        availablePassengers.splice(
+          availablePassengers.findIndex((p) => p.name === pickedDriver.name),
+          1
+        );
+        pickedDrivers.push(pickedDriver);
+        const passengerSet = availablePassengers.splice(0, passengersPerCar);
+        pickedPassengers.push(passengerSet);
+        availableDrivers = availableDrivers.filter(
+          (d) => !passengerSet.map((p) => p.name).includes(d.name)
+        );
+      });
+    setDrivers(pickedDrivers);
+    setPassengers(pickedPassengers);
+    setLocation(pickLocation());
   }
-  return <div>
+
+  function pickLocation() {
+    let pts = 0;
+    const endingPriority = Math.random() * totalLocationPoints;
+    let pickedLocation;
+    locations.forEach((loc) => {
+      if (pickedLocation) {
+        return;
+      }
+      pts = loc.priority + pts;
+      if (pts > endingPriority) {
+        pickedLocation = loc;
+      }
+    });
+
+    return pickedLocation.name;
+  }
+  return (
     <div>
       <div>
-        Pick attendees:
+        <div>Pick attendees:</div>
+        {people.map((p) => {
+          return (
+            <div>
+              <span>{p.name}</span>
+              <label htmlFor={`${p.name}checkbox`} />
+              <input
+                id={`${p.name}checkbox`}
+                type="checkbox"
+                checked={p.isChecked || false}
+                onChange={(e) => {
+                  setPeople((prev) =>
+                    prev.map((prevP) =>
+                      prevP.name === p.name
+                        ? { ...p, isChecked: e.target.checked }
+                        : prevP
+                    )
+                  );
+                }}
+              />
+            </div>
+          );
+        })}
       </div>
-      {people.map(p => {
-        return <div>
-          <span>{p.name}</span>
-          <label htmlFor={`${p.name}checkbox`} />
-          <input 
-id = {`${p.name}checkbox`} 
-            type="checkbox" 
-            checked={p.isChecked || false}
-            onChange={(e) => {
-              setPeople((prev) => 
-                prev.map(prevP => 
-                         prevP.name === p.name ? 
-                           { ...p, isChecked: e.target.checked} : 
-                           prevP
-              )
-                       )}}
-          />
+      <br />
+      <button
+        onClick={() => {
+          pick(people.filter((p) => p.isChecked));
+        }}
+      >
+        Update attendees list
+      </button>
+      <br />
+      <br />
+      {drivers.length ? (
+        <div>
+          <div id="drivers">
+            {drivers.map((d, i) => {
+              return (
+                <div>
+                  {d.name}'s car:&nbsp;
+                  <span>{passengers[i].map((p) => p.name).join(", ")}</span>
+                </div>
+              );
+            })}
+          </div>
+          <br />
+          <div>Adventure destination: {location}</div>
+          <button onClick={() => pick(people.filter((p) => p.isChecked))}>
+            Pick again
+          </button>
         </div>
-      })}
+      ) : null}
+      {noDrivers ? (
+        <p>
+          Nobody with a license was picked. Everyone had to stay home and work
+          on their papers. Nobody had fun.
+        </p>
+      ) : null}
+      {isLimo ? (
+        <div>
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=XuzyXnuZiWnmIhVN&autoplay=1"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          ></iframe>
+          <img src="/limo.webp" />
+        </div>
+      ) : null}
     </div>
-    <br />
-    <button onClick={() => {
-      pick(people.filter(p => p.isChecked))
-      }}>
-      Update attendees list
-    </button>
-    <br />
-    <br />
-    {
-      drivers.length ? <div>
-    <div id="drivers">
-      {drivers.map((d, i) => {
-        return <div>
-          {d.name}'s car:&nbsp;
-          <span>
-            {passengers[i].map(p => p.name).join(', ')}
-            </span>
-        </div>
-      })}
-    </div> 
-    <br />
-      <button onClick={() => pick(people.filter(p => p.isChecked))}>Pick again</button>
-      </div> : null
-    }
-  </div>
+  );
 }
