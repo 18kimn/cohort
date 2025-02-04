@@ -32,7 +32,7 @@ const locations = [
 ];
 const totalLocationPoints = locations.reduce(
   (prev, curr) => prev + curr.priority,
-  0
+  0,
 );
 
 export default function CarpoolPage() {
@@ -61,17 +61,17 @@ export default function CarpoolPage() {
     const nDrivers = Math.min(
       Math.max(
         Math.min(Math.ceil(Math.random() * 3), availableDrivers.length),
-        Math.ceil(attendees.length / 5)
+        Math.ceil(attendees.length / 5),
       ),
-      Math.ceil(attendees.length / 2)
+      Math.ceil(attendees.length / 2),
     );
     const pickedDrivers = availableDrivers.splice(0, nDrivers);
     const pickedPassengers = [];
     const availablePassengers = [...attendees].filter(
-      (p) => !pickedDrivers.map((d) => d.name).includes(p.name)
+      (p) => !pickedDrivers.map((d) => d.name).includes(p.name),
     );
     const passengersPerCar = Math.ceil(
-      (attendees.length - nDrivers) / nDrivers
+      (attendees.length - nDrivers) / nDrivers,
     );
     Array(nDrivers)
       .fill(0)
@@ -121,8 +121,8 @@ export default function CarpoolPage() {
                     prev.map((prevP) =>
                       prevP.name === p.name
                         ? { ...p, isChecked: !p.isChecked }
-                        : prevP
-                    )
+                        : prevP,
+                    ),
                   );
                 }}
               >
@@ -137,8 +137,8 @@ export default function CarpoolPage() {
                       prev.map((prevP) =>
                         prevP.name === p.name
                           ? { ...p, isChecked: e.target.checked }
-                          : prevP
-                      )
+                          : prevP,
+                      ),
                     );
                   }}
                 />
@@ -194,6 +194,9 @@ export default function CarpoolPage() {
           <img src="/limo.webp" />
         </div>
       ) : null}
+      <div>
+        <img src="/meme.png" />
+      </div>
     </div>
   );
 }
