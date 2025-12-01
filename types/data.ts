@@ -5,3 +5,9 @@ export type Card = {
   x: number;
   y: number;
 };
+
+export type Bet = {
+  better: string;
+  amount: number;
+  date: Date;
+};
