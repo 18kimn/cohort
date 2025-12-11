@@ -8,14 +8,14 @@ export default async function handler(
   res: NextApiResponse<Bet[]>
 ) {
   if (req.method === "GET") {
-    const bets = fs.readFileSync("bets.json", "utf-8");
+    const bets = fs.readFileSync("gsrabets.json", "utf-8");
     res.status(200).json(JSON.parse(bets));
     return;
   }
 
   if (req.method === "POST") {
     fs.writeFileSync("bets.json", JSON.stringify(req.body));
-    const bets = fs.readFileSync("bets.json", "utf-8");
+    const bets = fs.readFileSync("gsrabets.json", "utf-8");
     res.status(200).json(JSON.parse(bets));
     return;
   }
