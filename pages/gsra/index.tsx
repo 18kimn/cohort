@@ -7,7 +7,7 @@ export default function BetPage() {
   const [updateStatus, setUpdateStatus] = useState("" as string);
 
   useEffect(() => {
-    fetch("/api/bets")
+    fetch("/api/gsrabets")
       .then((res) => res.json())
       .then((res) => setBets(res));
   }, []);
@@ -16,7 +16,7 @@ export default function BetPage() {
     const filtered = Object.fromEntries(
       Object.entries(bets).filter(([_, obj]) => obj.better)
     );
-    fetch("/api/bets", {
+    fetch("/api/gsrabets", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(filtered),
